@@ -1,0 +1,68 @@
+253a254,305
+> ###############################################################################
+> 
+> philips_process() {
+>   phaseroot=$1
+>   absroot=$2
+>   outfile=`$FSLDIR/bin/remove_ext $3`
+>   deltaTE=$4  # in ms
+>   sanitycheck=$5
+>   tmpnm=$6
+> 
+>   # sanity checks
+>   if [ $sanitycheck = yes ] ; then
+> 
+>     # check range of phase data (should be close to 1000/deltaTE)
+>     rr=`$FSLDIR/bin/fslstats ${phaseroot} -R`
+>     rmin=`echo $rr | awk '{ print $1 }'`
+>     rmax=`echo $rr | awk '{ print $2 }'`
+>     range=`echo $rmax - $rmin | bc -l`
+>     nrange=`echo "$range * $deltaTE / 1000" | bc -l`
+>     if [ `echo "($nrange < 0.9) || ($nrange > 1.1)" | bc -l` -gt 0 ]; then
+>       echo "Phase image values do not have expected range"
+>       echo "Expecting range of `echo "scale=6; 1000/$deltaTE" | bc -l` but found $rmin to $rmax (range of $range)"
+>       echo "Please re-scale or find correct image"
+>       exit 2
+>     fi
+> 
+>     # check that absolute image has been brain extracted
+>     bet_check ${absroot}
+>   fi
+> 
+>   # make brain mask
+>   maskim=${tmpnm}_tmp_mask
+>   $FSLDIR/bin/fslmaths ${absroot} -thr 0.00000001 -bin ${maskim}
+> 
+>   # convert phasemap to radians
+>   $FSLDIR/bin/fslmaths ${phaseroot} -mul 2 -mul 3.14159 -mul $deltaTE -div 1000 -mas ${maskim} ${tmpnm}_tmp_ph_radians -odt float
+> 
+>   # unwrap phasemap
+>   $FSLDIR/bin/prelude -p ${tmpnm}_tmp_ph_radians -a ${absroot} -m ${maskim} -o ${tmpnm}_tmp_ph_radians_unwrapped -v
+> 
+>   # convert to rads/sec
+>   $FSLDIR/bin/fslmaths ${tmpnm}_tmp_ph_radians_unwrapped -div $deltaTE -mul 1000 ${tmpnm}_tmp_ph_rps -odt float
+> 
+>   # call FUGUE to extrapolate from mask (fill holes, etc)
+>   $FSLDIR/bin/fugue --loadfmap=${tmpnm}_tmp_ph_rps --mask=${maskim} --savefmap=$outfile
+> 
+>   # demean to avoid gross shifting
+>   demean_image ${outfile} ${maskim} ${tmpnm}
+> 
+>   # clean up edge voxels
+>   clean_up_edge ${outfile} ${maskim} ${tmpnm}
+> }
+309c361
+< if [ $1 != SIEMENS -a $1 != OCMR -a $1 != VARIAN ] ; then
+---
+> if [ $1 != SIEMENS -a $1 != OCMR -a $1 != VARIAN -a $1 != PHILIPS ] ; then
+312c364
+<     echo "First argument must be SIEMENS or VARIAN"
+---
+>     echo "First argument must be SIEMENS, VARIAN, or PHILIPS"
+352c404
+< else
+---
+> elif [ $1 = SIEMENS ] ; then
+353a406,407
+> else
+>   philips_process $phaseroot $absroot $outfile $dTE $sanitycheck $tmpnm
