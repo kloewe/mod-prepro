@@ -12,12 +12,6 @@
 # Author: Kristian Loewe
 #-----------------------------------------------------------------------------
 
-fname() {
-  fname=`basename $1`
-  fname_stripped=${fname/.*/}
-  echo $fname_stripped
-}
-
 if [ $# -ne 2 ]; then
   exit 1
 fi
@@ -36,9 +30,7 @@ cat ${jobs} | while read cmd; do
   k=$(( $k+1 ))
 
   echo "job: $k/$n"
-
   echo "cmd: ${cmd}"
-
   eval "${cmd}" & echo "pid: $!"
 
   sleep 1
