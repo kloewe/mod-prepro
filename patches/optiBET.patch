@@ -1,0 +1,30 @@
+1c1
+< #!/bin/sh
+---
+> #!/bin/bash
+14c14
+< echo "How To Use:   sh optiBET.sh -i <input_image> -options"
+---
+> echo "How To Use:   optiBET.sh -i <input_image> -options"
+21a22,23
+> echo "* using -p <thr> the fractional intensity threshold to be used by FSL's bet can be specified (default: 0.1)"
+> echo "* the option -p is ignored if AFNI is used for initial extraction"
+44a47
+> popt=0.1;
+46c49
+< while getopts i:faotgd name
+---
+> while getopts i:faotgdp: name
+55a59
+> p)popt=$OPTARG;;
+122,123c126,127
+<     echo step1 BET -B -f 0.1 subject ${i} for initial extraction
+<     bet ${iopt} ${i}_step1 -B -f 0.1
+---
+>     echo step1 BET -B -f ${popt} subject ${i} for initial extraction
+>     bet ${iopt} ${i}_step1 -B -f ${popt}
+183c187
+< fi
+\ No newline at end of file
+---
+> fi
