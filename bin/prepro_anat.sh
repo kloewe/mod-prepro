@@ -47,13 +47,25 @@ fname() {
   echo $fname_stripped
 }
 
+# --- check the number of input arguments
 [ "$#" -lt 2 ] && ( usage && exit 1 )
 
+# --- check external dependencies
+if ! [ -x "$(command -v fsl)" ]; then
+  echo "Error: Could not find FSL."
+  exit 1
+fi
+if ! [ -x "$(command -v optiBET.sh)" ]; then
+  echo "Error: Could not find optiBET."
+  exit 1
+fi
+
+# --- required arguments
 anat_in=`dirname $1`/`fname $1`
 outdir=`fsl_abspath $2`
 shift 2
 
-# --- parameters / options
+# --- options
 overwrite=0
 bet_method="bet"
 bet_params="-f 0.5"
@@ -62,7 +74,7 @@ while [ $# -ge 1 ] ; do
   name=`get_opt "$1"`
   shift
   value=`get_opt "$1"`
-  echo "${name}: ${value}"
+  #echo "${name}: ${value}"
 
   case "${name}" in
     --bet-method)
