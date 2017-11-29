@@ -2,15 +2,19 @@
 #-----------------------------------------------------------------------------
 # Preprocessing of anatomical (T1) images
 #
-# - reorient to MNI152 orientation   (fslreorient2std)
-# - brain extraction                 (bet or optiBET)
-# - bias field correction            (fast)
-# - tissue-type segmentation         (fast)
-# - registration to MNI152 space     (flirt and fnirt)
+# - Reorient to MNI152 orientation   (fslreorient2std)
+#
+# - Brain extraction                 (bet or optiBET)
+#
+# - Bias field correction            (fast)
+#
+# - Tissue-type segmentation         (fast)
+#
+# - Registration to MNI152 space     (flirt and fnirt)
 #
 # External dependencies:
-# FSL      (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL)
-# optiBET  (https://montilab.psych.ucla.edu/fmri-wiki/optibet)
+#   FSL      (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL)
+#   optiBET  (https://montilab.psych.ucla.edu/fmri-wiki/optibet)
 #
 # Author: Kristian Loewe
 #-----------------------------------------------------------------------------
