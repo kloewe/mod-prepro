@@ -28,7 +28,7 @@ usage() {
   echo "directory specified by 'fname' and 'outdir', respectively."
   echo ""
   echo "Options:"
-  echo "  --bet-method  bet|optiBET  brain extraction method"
+  echo "  --bet-method  bet|optiBET  brain extraction method  (default: bet)"
   echo "  --bet-params  <string>     pass-through params for bet"
   echo ""
   echo "External dependencies:"
@@ -61,7 +61,7 @@ if ! [ -x "$(command -v optiBET.sh)" ]; then
 fi
 
 # --- required arguments
-anat_in=`dirname $1`/`fname $1`
+anat_in=`dirname $1`/`fname $1`     # strip extension
 outdir=`fsl_abspath $2`
 shift 2
 
