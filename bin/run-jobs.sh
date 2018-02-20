@@ -16,8 +16,6 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-set -e
-
 jobs=`realpath $1`
 p=$2
 
