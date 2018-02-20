@@ -39,8 +39,6 @@ cat ${jobs} | while read cmd; do
   if [ ${#jobs[@]} -ge $p ]; then
     wait -n # needs bash 4.3 or later
   fi
-
-  isubj=$(( $isubj+1 ))
 done
 
 wait
