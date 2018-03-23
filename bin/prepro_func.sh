@@ -299,7 +299,7 @@ fi
 printf "FSL Motion Outliers ...\n"
 for metric in refrms dvars; do
   printf "metric: ${metric} ...\n"
-  if [ ! -f ${func_out}.fmo.${metric}.cf ] || [ $overwrite == 1 ]; then
+  if [ ! -f ${func_out}_fmo_${metric}.cf ] || [ $overwrite == 1 ]; then
     set -x
     fsl_motion_outliers \
       -i ${func_out}.nii.gz \
@@ -315,6 +315,7 @@ for metric in refrms dvars; do
     printf "[skipped] (output exists)\n"
   fi
 done
+printf "\n"
 
 # --- run epi_reg
 printf "Epi_reg ...\n"
